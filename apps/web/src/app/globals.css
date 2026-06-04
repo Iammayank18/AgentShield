@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #16161f;
+  --border-subtle: #1e1e2e;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: #2d2d3d; border-radius: 2px; }
+
+/* Trust level colors */
+.trust-trusted   { color: #22c55e; }
+.trust-untrusted { color: #ef4444; }
+.trust-sensitive { color: #f97316; }
+
+.border-trusted   { border-color: #22c55e; }
+.border-untrusted { border-color: #ef4444; }
+.border-sensitive { border-color: #f97316; }
+
+.bg-trusted   { background-color: rgba(34, 197, 94, 0.1); }
+.bg-untrusted { background-color: rgba(239, 68, 68, 0.1); }
+.bg-sensitive { background-color: rgba(249, 115, 22, 0.1); }
