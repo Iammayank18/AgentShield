@@ -1,0 +1,21 @@
+{
+  "name": "@agent-shield/policy-engine",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agent-shield/shared-types": "workspace:*",
+    "@agent-shield/security-runtime": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "*",
+    "vitest": "^1.6.0"
+  }
+}

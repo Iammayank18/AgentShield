@@ -1,0 +1,25 @@
+{
+  "name": "@agent-shield/ui-components",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agent-shield/shared-types": "workspace:*",
+    "react": "^18.3.0",
+    "framer-motion": "^11.0.0",
+    "clsx": "^2.1.0"
+  },
+  "devDependencies": {
+    "typescript": "*",
+    "@types/react": "^18.3.0"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@agent-shield/agent-core",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@agent-shield/shared-types": "workspace:*",
+    "@agent-shield/security-runtime": "workspace:*",
+    "@agent-shield/policy-engine": "workspace:*",
+    "@agent-shield/tool-registry": "workspace:*",
+    "@langchain/langgraph": "^0.2.0",
+    "@langchain/core": "^0.3.0",
+    "@langchain/openai": "^0.3.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "*",
+    "@types/uuid": "^9.0.0"
+  }
+}

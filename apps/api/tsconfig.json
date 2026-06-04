@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "incremental": true,
+    "paths": {
+      "@agent-shield/shared-types": ["../../packages/shared-types/src"],
+      "@agent-shield/security-runtime": ["../../packages/security-runtime/src"],
+      "@agent-shield/policy-engine": ["../../packages/policy-engine/src"],
+      "@agent-shield/tool-registry": ["../../packages/tool-registry/src"],
+      "@agent-shield/agent-core": ["../../packages/agent-core/src"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
