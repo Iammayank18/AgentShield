@@ -90,11 +90,16 @@ export const useExecutionStore = create<ExecutionStore>((set) => ({
         }
         case "execution_completed": {
           const { execution } = event.payload as { execution: AgentExecution };
+          // Merge: keep SSE-accumulated violations since state.violations in agent is never populated
+          const merged = [
+            ...state.violations,
+            ...execution.violations.filter((v) => !state.violations.some((sv) => sv.id === v.id)),
+          ];
           return {
             eventLog,
             currentExecution: execution,
             steps: execution.steps,
-            violations: execution.violations,
+            violations: merged,
             streamStatus: "completed",
           };
         }

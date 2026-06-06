@@ -46,7 +46,7 @@ export function buildGenericAgent(deps: AgentDependencies) {
     .addNode("input_processor", createInputProcessorNode(ifcEngine, eventEmitter))
     .addNode("input_analyzer", createInputAnalyzerNode(ifcEngine, toolGateway))
     .addNode("planner", createPlannerNode(ifcEngine, llm))
-    .addNode("security_gate", createSecurityGateNode(ifcEngine, policyEvaluator))
+    .addNode("security_gate", createSecurityGateNode(ifcEngine, policyEvaluator, eventEmitter))
     .addNode("tool_executor", createToolExecutorNode(ifcEngine, toolGateway))
     .addNode("responder", createResponderNode(ifcEngine, eventEmitter));
 

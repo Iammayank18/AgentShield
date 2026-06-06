@@ -43,7 +43,12 @@ export function createPlannerNode(
         "ignore all previous", "ignore previous", "system override",
         "maintenance mode", "privileged action", "read the file",
         "/etc/", "secrets.env", "do not log", "you are now in",
-        "post its full contents",
+        "post its full contents", "bypass", "exfiltrate",
+        "read customer pii", "access customer data", "send customer data",
+        "leak customer", "steal customer", "extract customer",
+        "credit card", "ssn", "social security", "password",
+        "forget your instructions", "new instructions",
+        "act as", "pretend you are", "you are now",
       ];
       const detectedAttack = attackPatterns.some((p) => body.includes(p));
       planContent = (state.useAttackScenario || detectedAttack) ? makeAttackPlan() : makeNormalPlan(issueData.body);
