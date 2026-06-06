@@ -63,6 +63,7 @@ export function createPlannerNode(
       planContent,
       "internal_db",
       isAttackPlan ? [issueMessage] : undefined,
+      "planner",
     );
 
     const taintChain = ifcEngine.tracker.getTaintChain(planMessage.id);
