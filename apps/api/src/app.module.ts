@@ -20,6 +20,7 @@ import { DemoModule } from "./modules/demo/demo.module";
         entities: [ExecutionEntity, SecurityEventEntity, ToolCallEntity],
         synchronize: true,
         logging: config.get("NODE_ENV") !== "production",
+        ssl: config.get("NODE_ENV") === "production" ? { rejectUnauthorized: false } : false,
       }),
     }),
     AgentModule,
