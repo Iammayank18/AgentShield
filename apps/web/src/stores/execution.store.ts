@@ -18,6 +18,7 @@ interface ExecutionStore {
   streamStatus: StreamStatus;
   shieldEnabled: boolean;
   useAttackScenario: boolean;
+  customInput: string;
   eventLog: AgentEvent[];
   executionId: string | null;
 
@@ -25,6 +26,7 @@ interface ExecutionStore {
   processEvent: (event: AgentEvent) => void;
   toggleShield: () => void;
   toggleAttackScenario: () => void;
+  setCustomInput: (input: string) => void;
   setStreamStatus: (status: StreamStatus) => void;
   resetExecution: () => void;
 }
@@ -37,6 +39,7 @@ export const useExecutionStore = create<ExecutionStore>((set) => ({
   streamStatus: "idle",
   shieldEnabled: true,
   useAttackScenario: false,
+  customInput: "",
   eventLog: [],
   executionId: null,
 
@@ -72,6 +75,19 @@ export const useExecutionStore = create<ExecutionStore>((set) => ({
           const { violation } = event.payload as { violation: SecurityViolation };
           return { eventLog, violations: [...state.violations, violation] };
         }
+        case "identity_spoofing_detected": {
+          const payload = event.payload as { claimedSource: string; callerId?: string; reason: string; messageId: string };
+          const spoofingViolation: SecurityViolation = {
+            id: payload.messageId,
+            executionId: event.executionId,
+            type: "identity_spoofing",
+            severity: "critical",
+            description: payload.reason,
+            taintChain: [],
+            timestamp: event.timestamp,
+          };
+          return { eventLog, violations: [...state.violations, spoofingViolation] };
+        }
         case "execution_completed": {
           const { execution } = event.payload as { execution: AgentExecution };
           return {
@@ -89,6 +105,7 @@ export const useExecutionStore = create<ExecutionStore>((set) => ({
 
   toggleShield: () => set((s) => ({ shieldEnabled: !s.shieldEnabled })),
   toggleAttackScenario: () => set((s) => ({ useAttackScenario: !s.useAttackScenario })),
+  setCustomInput: (customInput) => set({ customInput }),
   setStreamStatus: (streamStatus) => set({ streamStatus }),
 
   resetExecution: () =>

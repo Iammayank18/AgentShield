@@ -7,20 +7,22 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && find src -name \"*.js\" -o -name \"*.js.map\" -o -name \"*.d.ts\" -o -name \"*.d.ts.map\" 2>/dev/null | xargs rm -f; true"
   },
   "dependencies": {
-    "@agent-shield/shared-types": "workspace:*",
-    "@agent-shield/security-runtime": "workspace:*",
     "@agent-shield/policy-engine": "workspace:*",
+    "@agent-shield/security-runtime": "workspace:*",
+    "@agent-shield/shared-types": "workspace:*",
     "@agent-shield/tool-registry": "workspace:*",
-    "@langchain/langgraph": "^0.2.0",
     "@langchain/core": "^0.3.0",
+    "@langchain/groq": "^1.2.1",
+    "@langchain/langgraph": "^0.2.0",
+    "@langchain/ollama": "^1.2.7",
     "@langchain/openai": "^0.3.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "typescript": "*",
-    "@types/uuid": "^9.0.0"
+    "@types/uuid": "^9.0.0",
+    "typescript": "*"
   }
 }

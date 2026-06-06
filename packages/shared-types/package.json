@@ -7,7 +7,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && find src -name \"*.js\" -o -name \"*.js.map\" -o -name \"*.d.ts\" -o -name \"*.d.ts.map\" 2>/dev/null | xargs rm -f; true"
   },
   "devDependencies": {
     "typescript": "*"

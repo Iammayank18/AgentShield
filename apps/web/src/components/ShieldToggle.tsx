@@ -13,29 +13,44 @@ export function ShieldToggle({ enabled, onToggle, disabled }: ShieldToggleProps)
     <button
       onClick={onToggle}
       disabled={disabled}
-      className={`relative flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-semibold transition-all duration-300 ${
+      className={`relative flex items-center gap-2.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed overflow-hidden ${
         enabled
-          ? "border-blue-500/50 bg-blue-500/10 text-blue-400 shadow-[0_0_16px_rgba(59,130,246,0.3)]"
-          : "border-red-500/30 bg-red-500/5 text-red-400"
-      } disabled:opacity-50 disabled:cursor-not-allowed`}
+          ? "bg-blue-500/10 border border-blue-500/30 text-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.15),inset_0_1px_0_rgba(255,255,255,0.05)]"
+          : "bg-red-500/8 border border-red-500/20 text-red-400 shadow-[0_0_12px_rgba(239,68,68,0.08)]"
+      }`}
     >
-      <motion.div
-        animate={{ rotate: enabled ? 0 : 15, scale: enabled ? 1 : 0.9 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      >
-        {enabled ? <Shield size={16} /> : <ShieldOff size={16} />}
-      </motion.div>
-      <span>AgentShield {enabled ? "ON" : "OFF"}</span>
-      <motion.div
-        className={`w-8 h-4 rounded-full relative ${enabled ? "bg-blue-500" : "bg-slate-600"}`}
-        animate={{ backgroundColor: enabled ? "#3b82f6" : "#475569" }}
-      >
+      {/* Animated background shimmer when enabled */}
+      {enabled && (
         <motion.div
-          className="absolute top-0.5 w-3 h-3 bg-white rounded-full shadow"
-          animate={{ left: enabled ? "calc(100% - 14px)" : "2px" }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent"
+          animate={{ x: ["-100%", "100%"] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
         />
+      )}
+
+      <motion.div
+        animate={{ rotate: enabled ? 0 : 12, scale: enabled ? 1 : 0.85 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        className="relative z-10"
+      >
+        {enabled
+          ? <Shield size={15} className="drop-shadow-[0_0_6px_rgba(96,165,250,0.6)]" />
+          : <ShieldOff size={15} />
+        }
       </motion.div>
+
+      <span className="relative z-10 tracking-wide">
+        {enabled ? "Shield ON" : "Shield OFF"}
+      </span>
+
+      {/* Toggle pill */}
+      <div className={`relative z-10 w-9 h-5 rounded-full transition-colors duration-300 ${enabled ? "bg-blue-500" : "bg-slate-700"}`}>
+        <motion.div
+          className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-md"
+          animate={{ left: enabled ? "calc(100% - 18px)" : "2px" }}
+          transition={{ type: "spring", stiffness: 600, damping: 35 }}
+        />
+      </div>
     </button>
   );
 }

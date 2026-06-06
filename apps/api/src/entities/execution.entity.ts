@@ -4,35 +4,35 @@ import type { ExecutionStep, SecurityViolation } from "@agent-shield/shared-type
 @Entity("executions")
 export class ExecutionEntity {
   @PrimaryColumn()
-  id: string;
+  id!: string;
 
   @Column()
-  sessionId: string;
+  sessionId!: string;
 
   @Column("text")
-  input: string;
+  input!: string;
 
   @Column({ default: "protected" })
-  mode: "protected" | "unprotected";
+  mode!: "protected" | "unprotected";
 
   @Column({ default: "running" })
-  status: string;
+  status!: string;
 
   @Column("bigint")
-  startedAt: number;
+  startedAt!: number;
 
   @Column("bigint", { nullable: true })
   completedAt?: number;
 
   @Column("jsonb", { default: [] })
-  steps: ExecutionStep[];
+  steps!: ExecutionStep[];
 
   @Column("jsonb", { default: [] })
-  violations: SecurityViolation[];
+  violations!: SecurityViolation[];
 
   @Column("text", { nullable: true })
   output?: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

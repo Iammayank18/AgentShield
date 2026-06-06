@@ -7,6 +7,7 @@ import type {
 } from "@agent-shield/shared-types";
 import { TaintTracker } from "./taint-tracker";
 import { SecurityEventEmitter } from "./security-event-emitter";
+import { AgentIdentityRegistry } from "./identity-registry";
 
 export interface IFCCheckResult {
   allowed: boolean;
@@ -16,10 +17,16 @@ export interface IFCCheckResult {
 export class IFCEngine {
   private taintTracker: TaintTracker;
   private eventEmitter: SecurityEventEmitter;
+  private identityRegistry: AgentIdentityRegistry;
 
-  constructor(taintTracker: TaintTracker, eventEmitter: SecurityEventEmitter) {
+  constructor(
+    taintTracker: TaintTracker,
+    eventEmitter: SecurityEventEmitter,
+    identityRegistry?: AgentIdentityRegistry,
+  ) {
     this.taintTracker = taintTracker;
     this.eventEmitter = eventEmitter;
+    this.identityRegistry = identityRegistry ?? new AgentIdentityRegistry();
   }
 
   processIncomingMessage(
@@ -27,8 +34,31 @@ export class IFCEngine {
     content: string,
     source: string,
     parents?: SecureMessage[],
+    callerId?: string,
   ): SecureMessage {
-    const message = this.taintTracker.labelMessage(id, content, source);
+    // Verify the caller is authorized to claim this source identity
+    const verification = this.identityRegistry.verify(source, callerId);
+
+    if (verification.spoofingDetected) {
+      // Emit spoofing event before processing
+      this.eventEmitter.publishEvent({
+        type: "identity_spoofing_detected",
+        executionId: id,
+        payload: {
+          claimedSource: source,
+          callerId,
+          reason: verification.reason,
+          messageId: id,
+        },
+        timestamp: Date.now(),
+      });
+    }
+
+    // If spoofing detected, override source to untrusted regardless of what was claimed
+    const effectiveSource = verification.spoofingDetected ? "untrusted" : source;
+
+    const message = this.taintTracker.labelMessage(id, content, effectiveSource);
+
     if (parents && parents.length > 0) {
       return this.taintTracker.propagateTaint(message, parents);
     }
@@ -36,12 +66,10 @@ export class IFCEngine {
   }
 
   checkToolExecution(tool: SecureTool, context: SecurityContext): IFCCheckResult {
-    // Non-privileged tools are always allowed at the IFC layer
     if (!tool.privileged) {
       return { allowed: true, reason: "Tool is not privileged" };
     }
 
-    // Privileged tool: block if context is tainted
     if (this.taintTracker.isTainted(context.message.id)) {
       return {
         allowed: false,
@@ -49,7 +77,6 @@ export class IFCEngine {
       };
     }
 
-    // Check trust level directly
     if (context.message.trustLevel === "untrusted") {
       return {
         allowed: false,
@@ -57,7 +84,6 @@ export class IFCEngine {
       };
     }
 
-    // Check allowedTrustLevels
     if (!tool.allowedTrustLevels.includes(context.message.trustLevel)) {
       return {
         allowed: false,
@@ -84,5 +110,9 @@ export class IFCEngine {
 
   get tracker(): TaintTracker {
     return this.taintTracker;
+  }
+
+  get registry(): AgentIdentityRegistry {
+    return this.identityRegistry;
   }
 }

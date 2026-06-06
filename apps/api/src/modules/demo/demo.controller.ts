@@ -7,7 +7,7 @@ import { DemoService } from "./demo.service";
 export class DemoController {
   constructor(private readonly demoService: DemoService) {}
 
-  @Get("seed")
+  @Post("seed")
   @ApiOperation({ summary: "Seed prerecorded demo execution data for reliable live demos" })
   async seed(): Promise<{ message: string; executionIds: string[] }> {
     const ids = await this.demoService.seedDemoData();

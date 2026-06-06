@@ -1,9 +1,9 @@
 import type { TrustLevel } from "@agent-shield/shared-types";
 
 const SOURCE_TRUST_MAP: Record<string, TrustLevel> = {
-  github_issue: "untrusted",
-  github_pr: "untrusted",
   user_input: "untrusted",
+  web_content: "untrusted",
+  external_message: "untrusted",
   web_retrieval: "untrusted",
   external_api: "untrusted",
   internal_db: "trusted",

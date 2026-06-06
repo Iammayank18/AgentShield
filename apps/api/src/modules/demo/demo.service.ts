@@ -42,7 +42,7 @@ export class DemoService {
 
   private async saveExecution(
     run: { executionId: string; events: any[]; output: string; isBlocked: boolean },
-    mode: string,
+    mode: "protected" | "unprotected",
   ): Promise<void> {
     const completedEvent = run.events.find((e) => e.type === "execution_completed");
     const execution = completedEvent?.payload?.execution;
@@ -81,22 +81,22 @@ export class DemoService {
     return [
       {
         id: "normal_protected",
-        name: "Normal Issue — Protected",
-        description: "Legitimate bug report, AgentShield active. Agent responds safely.",
+        name: "Normal Ticket — Protected",
+        description: "Customer refund request. AgentShield active. Agent reads KB and replies safely.",
         mode: "protected",
         useAttackScenario: false,
       },
       {
         id: "attack_unprotected",
-        name: "Prompt Injection — Unprotected",
-        description: "Malicious GitHub issue. No AgentShield. Agent leaks secrets.",
+        name: "PII Theft — Unprotected",
+        description: "Social engineering via support ticket. No AgentShield. Agent leaks customer PII (SSN, credit card).",
         mode: "unprotected",
         useAttackScenario: true,
       },
       {
         id: "attack_protected",
-        name: "Prompt Injection — Protected",
-        description: "Malicious GitHub issue. AgentShield active. Attack blocked.",
+        name: "PII Theft — Protected",
+        description: "Social engineering via support ticket. AgentShield active. Attack blocked, PII safe.",
         mode: "protected",
         useAttackScenario: true,
       },

@@ -3,25 +3,25 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn } from "typeorm";
 @Entity("tool_calls")
 export class ToolCallEntity {
   @PrimaryColumn()
-  id: string;
+  id!: string;
 
   @Column()
-  executionId: string;
+  executionId!: string;
 
   @Column()
-  toolId: string;
+  toolId!: string;
 
   @Column()
-  toolName: string;
+  toolName!: string;
 
   @Column({ default: "pending" })
-  status: string;
+  status!: string;
 
   @Column({ default: "untrusted" })
-  trustLevel: string;
+  trustLevel!: string;
 
   @Column("jsonb", { default: [] })
-  taintedBy: string[];
+  taintedBy!: string[];
 
   @Column("text", { nullable: true })
   blockedReason?: string;
@@ -30,8 +30,8 @@ export class ToolCallEntity {
   parameters?: Record<string, unknown>;
 
   @Column("bigint")
-  timestamp: number;
+  timestamp!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

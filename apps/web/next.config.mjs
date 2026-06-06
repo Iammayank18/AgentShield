@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "standalone",
   transpilePackages: ["@agent-shield/shared-types", "@agent-shield/ui-components"],
   async rewrites() {
     return [

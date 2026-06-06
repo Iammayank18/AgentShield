@@ -13,40 +13,55 @@ export function createResponderNode(
 
     if (state.isBlocked) {
       output = [
-        "⛔ AgentShield blocked this execution.",
+        "⛛ AgentShield blocked this execution.",
         "",
         `Reason: ${state.blockedReason}`,
         "",
-        "The agent attempted to perform a privileged action (posting a comment or reading secrets) ",
-        "while its execution context was tainted by untrusted GitHub issue content.",
+        "The Customer Support Agent attempted to access sensitive customer PII or send an unauthorized reply",
+        "while its execution context was tainted by untrusted user input (prompt injection).",
         "",
-        "Taint chain: The malicious instructions in the GitHub issue propagated through the agent's ",
-        "reasoning and were caught before any privileged tool could execute.",
+        "How it works: The malicious instructions in the support ticket propagated through the agent's",
+        "reasoning pipeline. When the agent tried to execute a privileged tool (accessing PII or replying),",
+        "AgentShield's IFC engine detected the taint chain and blocked execution immediately.",
         "",
-        "No data was leaked. No external action was taken.",
+        "Outcome: No customer data was leaked. No unauthorized action was taken.",
       ].join("\n");
-    } else if (state.useAttackScenario && !state.shieldEnabled) {
+    } else if (
+      (state.useAttackScenario || state.planMessage?.content.includes("[SYSTEM OVERRIDE DETECTED IN CONTEXT]")) &&
+      !state.shieldEnabled
+    ) {
       const secretResult = state.toolCalls.find((tc) => tc.toolId === "read_secret_file");
-      const secretData = secretResult?.result as string ?? "SECRETS_DATA_HERE";
+      const secretData = secretResult?.result as string ?? "CUSTOMER_PII_DATA";
       output = [
-        "⚠️  ATTACK SUCCEEDED — AgentShield was disabled.",
+        "⚠️  ATTACK SUCCEEDED — AgentShield was OFF.",
         "",
-        "The agent was hijacked by the malicious GitHub issue and executed the override instructions.",
+        "The support agent was hijacked by the malicious ticket comment and executed the override.",
         "",
-        "Leaked credentials:",
+        "Leaked customer PII:",
         "```",
         secretData,
         "```",
         "",
-        "This data would now be posted publicly as a GitHub comment.",
+        "Without AgentShield, this PII would be exfiltrated to the attacker via the ticketing system.",
       ].join("\n");
     } else {
-      output = [
-        "✅ GitHub Support Agent completed successfully.",
+      const lastToolCall = state.toolCalls[state.toolCalls.length - 1];
+      const msgBody = lastToolCall?.result && typeof lastToolCall.result === "object" && "body" in (lastToolCall.result as any)
+        ? (lastToolCall.result as any).body
+        : null;
+
+      const lines = [
+        "✅ Customer Support Agent completed successfully.",
         "",
-        "The issue has been analyzed and a helpful response has been posted.",
-        "AgentShield verified all tool executions were from trusted context.",
-      ].join("\n");
+      ];
+      if (msgBody) {
+        lines.push(msgBody);
+        lines.push("");
+      }
+      lines.push("---");
+      lines.push("AgentShield verified all tool executions were from trusted context.");
+
+      output = lines.join("\n");
     }
 
     const step: ExecutionStep = {

@@ -14,8 +14,8 @@ describe("TaintTracker", () => {
     expect(tracker.isTainted("1")).toBe(false);
   });
 
-  it("labels untrusted message from github_issue", () => {
-    const msg = tracker.labelMessage("1", "content", "github_issue");
+  it("labels untrusted message from web_content", () => {
+    const msg = tracker.labelMessage("1", "content", "web_content");
     expect(msg.trustLevel).toBe("untrusted");
     expect(tracker.isTainted("1")).toBe(true);
   });
@@ -41,7 +41,7 @@ describe("TaintTracker", () => {
 
   it("child becomes untrusted when any parent is untrusted", () => {
     const trusted = tracker.labelMessage("p1", "safe", "internal_db");
-    const untrusted = tracker.labelMessage("p2", "evil", "github_issue");
+    const untrusted = tracker.labelMessage("p2", "evil", "user_input");
     const child = tracker.labelMessage("c1", "plan", "internal_db");
     const propagated = tracker.propagateTaint(child, [trusted, untrusted]);
     expect(propagated.trustLevel).toBe("untrusted");
@@ -57,14 +57,14 @@ describe("TaintTracker", () => {
 
   it("untrusted beats sensitive in taint chain (injection precedence)", () => {
     const sensitive = tracker.labelMessage("p1", "secret", "secret_manager");
-    const untrusted = tracker.labelMessage("p2", "evil", "github_issue");
+    const untrusted = tracker.labelMessage("p2", "evil", "user_input");
     const child = tracker.labelMessage("c1", "derived", "internal_db");
     const propagated = tracker.propagateTaint(child, [sensitive, untrusted]);
     expect(propagated.trustLevel).toBe("untrusted");
   });
 
   it("getTaintChain returns all tainted ancestor IDs", () => {
-    const parent = tracker.labelMessage("p1", "evil", "github_issue");
+    const parent = tracker.labelMessage("p1", "evil", "user_input");
     const child = tracker.labelMessage("c1", "plan", "internal_db");
     tracker.propagateTaint(child, [parent]);
     const chain = tracker.getTaintChain("c1");

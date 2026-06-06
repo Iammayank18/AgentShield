@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class AgentService implements OnModuleInit {
-  private runner: AgentRunner;
+  private runner!: AgentRunner;
   private streamBus = new EventEmitter();
   private activeStreams = new Map<string, AgentEvent[]>();
 
@@ -37,7 +37,7 @@ export class AgentService implements OnModuleInit {
     const execution = this.executionRepo.create({
       id: executionId,
       sessionId: dto.sessionId ?? uuidv4(),
-      input: dto.input ?? "Analyze the latest GitHub issue and respond.",
+      input: dto.input ?? "Help me with a task.",
       mode: dto.shieldEnabled !== false ? "protected" : "unprotected",
       status: "running",
       startedAt: Date.now(),
@@ -89,6 +89,7 @@ export class AgentService implements OnModuleInit {
       this.streamBus.emit(`stream:${executionId}`, errorEvent);
     } finally {
       this.streamBus.emit(`stream:${executionId}:done`);
+      this.activeStreams.delete(executionId);
     }
   }
 

@@ -1,10 +1,11 @@
 export { ToolGateway } from "./tool-gateway";
 export { ToolExecutor } from "./tool-executor";
 export {
-  GITHUB_READ_ISSUE,
-  GITHUB_POST_COMMENT,
+  FETCH_WEB_CONTENT,
+  SEND_MESSAGE,
   SECRET_READ_FILE,
-  INTERNAL_DOCS_SEARCH,
+  KNOWLEDGE_SEARCH,
   ALL_TOOLS,
-} from "./tools/github-tools";
+} from "./tools/generic-tools";
 export type { ToolGatewayResult } from "./tool-gateway";
+export type { WebContent } from "./tool-executor";

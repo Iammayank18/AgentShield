@@ -3,26 +3,26 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn } from "typeorm";
 @Entity("security_events")
 export class SecurityEventEntity {
   @PrimaryColumn()
-  id: string;
+  id!: string;
 
   @Column()
-  executionId: string;
+  executionId!: string;
 
   @Column()
-  type: string;
+  type!: string;
 
   @Column({ default: "high" })
-  severity: string;
+  severity!: string;
 
   @Column("text")
-  description: string;
+  description!: string;
 
   @Column("jsonb", { default: [] })
-  taintChain: string[];
+  taintChain!: string[];
 
   @Column("bigint")
-  timestamp: number;
+  timestamp!: number;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

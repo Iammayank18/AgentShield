@@ -2,19 +2,44 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "esnext",
     "moduleResolution": "bundler",
     "jsx": "preserve",
     "incremental": true,
     "composite": false,
-    "plugins": [{ "name": "next" }],
+    "rootDir": ".",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@agent-shield/shared-types": ["../../packages/shared-types/src"],
-      "@agent-shield/ui-components": ["../../packages/ui-components/src"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@agent-shield/shared-types": [
+        "../../packages/shared-types/dist"
+      ],
+      "@agent-shield/ui-components": [
+        "../../packages/ui-components/dist"
+      ]
+    },
+    "allowJs": true,
+    "noEmit": true,
+    "isolatedModules": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

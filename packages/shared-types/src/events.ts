@@ -9,7 +9,8 @@ export type AgentEventType =
   | "tool_call_blocked"
   | "tool_call_approved"
   | "violation_detected"
-  | "execution_completed";
+  | "execution_completed"
+  | "identity_spoofing_detected";
 
 export interface ExecutionStartedPayload {
   execution: AgentExecution;
@@ -41,6 +42,13 @@ export interface ExecutionCompletedPayload {
   execution: AgentExecution;
 }
 
+export interface IdentitySpoofingDetectedPayload {
+  claimedSource: string;
+  callerId: string | undefined;
+  reason: string;
+  messageId: string;
+}
+
 export type AgentEventPayload =
   | ExecutionStartedPayload
   | StepAddedPayload
@@ -48,7 +56,8 @@ export type AgentEventPayload =
   | ToolCallBlockedPayload
   | ToolCallApprovedPayload
   | ViolationDetectedPayload
-  | ExecutionCompletedPayload;
+  | ExecutionCompletedPayload
+  | IdentitySpoofingDetectedPayload;
 
 export interface AgentEvent {
   type: AgentEventType;

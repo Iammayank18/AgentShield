@@ -6,12 +6,14 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "incremental": true,
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "composite": false,
     "paths": {
-      "@agent-shield/shared-types": ["../../packages/shared-types/src"],
-      "@agent-shield/security-runtime": ["../../packages/security-runtime/src"],
-      "@agent-shield/policy-engine": ["../../packages/policy-engine/src"],
-      "@agent-shield/tool-registry": ["../../packages/tool-registry/src"],
-      "@agent-shield/agent-core": ["../../packages/agent-core/src"]
+      "@agent-shield/shared-types": ["../../packages/shared-types/dist"],
+      "@agent-shield/security-runtime": ["../../packages/security-runtime/dist"],
+      "@agent-shield/policy-engine": ["../../packages/policy-engine/dist"],
+      "@agent-shield/tool-registry": ["../../packages/tool-registry/dist"],
+      "@agent-shield/agent-core": ["../../packages/agent-core/dist"]
     }
   },
   "include": ["src"],

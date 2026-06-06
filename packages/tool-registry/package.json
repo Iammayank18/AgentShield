@@ -7,14 +7,16 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist && find src -name \"*.js\" -o -name \"*.js.map\" -o -name \"*.d.ts\" -o -name \"*.d.ts.map\" 2>/dev/null | xargs rm -f; true"
   },
   "dependencies": {
-    "@agent-shield/shared-types": "workspace:*",
+    "@agent-shield/policy-engine": "workspace:*",
     "@agent-shield/security-runtime": "workspace:*",
-    "@agent-shield/policy-engine": "workspace:*"
+    "@agent-shield/shared-types": "workspace:*",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.0",
     "typescript": "*"
   }
 }

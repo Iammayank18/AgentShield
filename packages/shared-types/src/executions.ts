@@ -28,7 +28,8 @@ export type ViolationType =
   | "privilege_escalation"
   | "taint_propagation"
   | "policy_violation"
-  | "tool_blocked";
+  | "tool_blocked"
+  | "identity_spoofing";
 
 export type ViolationSeverity = "low" | "medium" | "high" | "critical";
 

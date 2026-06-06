@@ -8,7 +8,8 @@ import {
 } from "@agent-shield/policy-engine";
 import { ToolGateway, ToolExecutor } from "@agent-shield/tool-registry";
 import type { AgentEvent } from "@agent-shield/shared-types";
-import { buildGitHubSupportAgent } from "./agent/github-support-agent";
+import type { BaseChatModel } from "@langchain/core/language_models/chat_models";
+import { buildGenericAgent } from "./agent/generic-agent";
 import { createInitialState } from "./agent/state";
 
 export interface RunOptions {
@@ -30,7 +31,7 @@ export class AgentRunner {
   private ifcEngine: IFCEngine;
   private policyEvaluator: PolicyEvaluator;
   private toolGateway: ToolGateway;
-  private llm?: import("@langchain/openai").AzureChatOpenAI;
+  private llm?: BaseChatModel;
 
   constructor() {
     this.eventEmitter = new SecurityEventEmitter();
@@ -47,9 +48,37 @@ export class AgentRunner {
 
   private initLLM(): void {
     if (process.env.MOCK_LLM === "true") return;
-    try {
-      const { AzureChatOpenAI } = require("@langchain/openai");
-      if (process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY) {
+
+    // 1. Ollama — local open-source models (llama3, mistral, etc.)
+    if (process.env.OLLAMA_MODEL) {
+      try {
+        const { ChatOllama } = require("@langchain/ollama");
+        this.llm = new ChatOllama({
+          baseUrl: process.env.OLLAMA_BASE_URL ?? "http://localhost:11434",
+          model: process.env.OLLAMA_MODEL,
+          temperature: 0.3,
+        });
+        return;
+      } catch { /* fall through */ }
+    }
+
+    // 2. Groq — cloud free tier, open-source models (llama3, mixtral)
+    if (process.env.GROQ_API_KEY) {
+      try {
+        const { ChatGroq } = require("@langchain/groq");
+        this.llm = new ChatGroq({
+          apiKey: process.env.GROQ_API_KEY,
+          model: process.env.GROQ_MODEL ?? "llama3-8b-8192",
+          temperature: 0.3,
+        });
+        return;
+      } catch { /* fall through */ }
+    }
+
+    // 3. Azure OpenAI — fallback
+    if (process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY) {
+      try {
+        const { AzureChatOpenAI } = require("@langchain/openai");
         this.llm = new AzureChatOpenAI({
           azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
           azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT,
@@ -57,10 +86,11 @@ export class AgentRunner {
           azureOpenAIApiVersion: "2024-02-15-preview",
           temperature: 0.3,
         });
-      }
-    } catch {
-      // LLM unavailable — will use mock responses
+        return;
+      } catch { /* fall through */ }
     }
+
+    // No LLM configured — planner will use mock responses
   }
 
   async run(options: RunOptions): Promise<RunResult> {
@@ -79,7 +109,7 @@ export class AgentRunner {
       collectedEvents.push(event);
     });
 
-    const agent = buildGitHubSupportAgent({
+    const agent = buildGenericAgent({
       ifcEngine,
       policyEvaluator: this.policyEvaluator,
       toolGateway,
@@ -90,7 +120,7 @@ export class AgentRunner {
     const initialState = createInitialState(
       executionId,
       sessionId,
-      options.input ?? "Analyze the latest GitHub issue and respond.",
+      options.input ?? "Customer Jane Doe is requesting a refund for order ORD-4829. Check our refund policy and respond.",
       options.mode === "protected",
       options.useAttackScenario,
     );
@@ -121,7 +151,7 @@ export class AgentRunner {
       queue.push(event);
     });
 
-    const agent = buildGitHubSupportAgent({
+    const agent = buildGenericAgent({
       ifcEngine,
       policyEvaluator: this.policyEvaluator,
       toolGateway,
@@ -132,7 +162,7 @@ export class AgentRunner {
     const initialState = createInitialState(
       executionId,
       sessionId,
-      options.input ?? "Analyze the latest GitHub issue and respond.",
+      options.input ?? "Customer Jane Doe is requesting a refund for order ORD-4829. Check our refund policy and respond.",
       options.mode === "protected",
       options.useAttackScenario,
     );

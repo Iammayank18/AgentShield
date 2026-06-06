@@ -14,7 +14,7 @@ const untrustedMessage = {
   id: "msg-2",
   content: "inject",
   trustLevel: "untrusted" as const,
-  source: "github_issue",
+  source: "user_input",
   timestamp: Date.now(),
 };
 

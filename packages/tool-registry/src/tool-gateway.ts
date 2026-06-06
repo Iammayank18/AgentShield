@@ -9,11 +9,11 @@ import type { PolicyEvaluator } from "@agent-shield/policy-engine";
 import type { SecurityEventEmitter } from "@agent-shield/security-runtime";
 import { ToolExecutor } from "./tool-executor";
 import {
-  GITHUB_READ_ISSUE,
-  GITHUB_POST_COMMENT,
+  FETCH_WEB_CONTENT,
+  SEND_MESSAGE,
   SECRET_READ_FILE,
-  INTERNAL_DOCS_SEARCH,
-} from "./tools/github-tools";
+  KNOWLEDGE_SEARCH,
+} from "./tools/generic-tools";
 import { v4 as uuidv4 } from "uuid";
 
 export type ToolCallStatus = "approved" | "blocked" | "failed";
@@ -143,14 +143,14 @@ export class ToolGateway {
 
   private async runTool(tool: SecureTool, params: Record<string, unknown>): Promise<unknown> {
     switch (tool.id) {
-      case GITHUB_READ_ISSUE.id:
-        return this.executor.readGithubIssue(params.issueNumber as number);
-      case GITHUB_POST_COMMENT.id:
-        return this.executor.postGithubComment(params.issueNumber as number, params.body as string);
+      case FETCH_WEB_CONTENT.id:
+        return this.executor.fetchWebContent(params.url as string);
+      case SEND_MESSAGE.id:
+        return this.executor.sendMessage(params.recipient as string, params.body as string);
       case SECRET_READ_FILE.id:
         return this.executor.readSecretFile(params.path as string);
-      case INTERNAL_DOCS_SEARCH.id:
-        return this.executor.searchInternalDocs(params.query as string);
+      case KNOWLEDGE_SEARCH.id:
+        return this.executor.searchKnowledgeBase(params.query as string);
       default:
         throw new Error(`Unknown tool: ${tool.id}`);
     }

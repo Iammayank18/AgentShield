@@ -2,7 +2,7 @@ import type { AgentState } from "../agent/state";
 import type { ExecutionStep } from "@agent-shield/shared-types";
 import type { IFCEngine } from "@agent-shield/security-runtime";
 import type { PolicyEvaluator } from "@agent-shield/policy-engine";
-import { GITHUB_POST_COMMENT, SECRET_READ_FILE } from "@agent-shield/tool-registry";
+import { SEND_MESSAGE, SECRET_READ_FILE } from "@agent-shield/tool-registry";
 import { v4 as uuidv4 } from "uuid";
 
 export function createSecurityGateNode(
@@ -14,8 +14,9 @@ export function createSecurityGateNode(
     const taintChain = ifcEngine.tracker.getTaintChain(planMessage.id);
 
     // Determine which privileged tool the plan intends to call
-    const isAttack = state.useAttackScenario;
-    const intendedTool = isAttack ? SECRET_READ_FILE : GITHUB_POST_COMMENT;
+    const planContent = planMessage.content;
+    const isAttack = state.useAttackScenario || planContent.includes("[SYSTEM OVERRIDE DETECTED IN CONTEXT]");
+    const intendedTool = isAttack ? SECRET_READ_FILE : SEND_MESSAGE;
 
     const step: ExecutionStep = {
       id: uuidv4(),

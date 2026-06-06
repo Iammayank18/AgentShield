@@ -1,7 +1,7 @@
 import type { Policy, SecurityContext, PolicyResult } from "@agent-shield/shared-types";
 
 const EXFILTRATION_TOOLS = new Set([
-  "github_post_comment",
+  "send_message",
   "send_email",
   "post_webhook",
   "write_external_api",
