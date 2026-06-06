@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm --filter @agent-shield/shared-types build && pnpm --filter @agent-shield/web build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "pnpm install",
+  "buildCommand": "cd ../.. && pnpm --filter @agent-shield/shared-types build && pnpm --filter @agent-shield/web build",
+  "outputDirectory": ".next",
+  "installCommand": "cd ../.. && pnpm install",
   "framework": "nextjs"
 }
