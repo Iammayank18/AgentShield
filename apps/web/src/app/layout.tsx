@@ -4,6 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "AgentShield — Zero-Trust Runtime Security for AI Agents",
   description: "Deterministic runtime enforcement preventing prompt injection and privilege escalation in AI agents.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
